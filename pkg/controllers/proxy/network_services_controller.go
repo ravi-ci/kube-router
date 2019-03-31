@@ -598,6 +598,8 @@ func (nsc *NetworkServicesController) syncIpvsFirewall() error {
 			address = ipvsService.Address.String()
 			if ipvsService.Protocol == syscall.IPPROTO_TCP {
 				protocol = "tcp"
+			} else if ipvsService.Protocol == syscall.IPPROTO_SCTP {
+				protocol = "sctp"
 			} else {
 				protocol = "udp"
 			}
@@ -656,6 +658,8 @@ func (nsc *NetworkServicesController) publishMetrics(serviceInfoMap serviceInfoM
 		switch aProtocol := svc.protocol; aProtocol {
 		case "tcp":
 			protocol = syscall.IPPROTO_TCP
+		case "sctp":
+			protocol = syscall.IPPROTO_SCTP
 		case "udp":
 			protocol = syscall.IPPROTO_UDP
 		default:
@@ -833,6 +837,8 @@ func (nsc *NetworkServicesController) syncIpvsServices(serviceInfoMap serviceInf
 		switch svc.protocol {
 		case "tcp":
 			protocol = syscall.IPPROTO_TCP
+		case "sctp":
+			protocol = syscall.IPPROTO_SCTP
 		case "udp":
 			protocol = syscall.IPPROTO_UDP
 		default:
@@ -1096,6 +1102,8 @@ func (nsc *NetworkServicesController) syncIpvsServices(serviceInfoMap serviceInf
 	for _, ipvsSvc := range ipvsSvcs {
 		if ipvsSvc.Protocol == syscall.IPPROTO_TCP {
 			protocol = "tcp"
+		} else if ipvsSvc.Protocol == syscall.IPPROTO_SCTP {
+			protocol = "sctp"
 		} else {
 			protocol = "udp"
 		}
@@ -1735,6 +1743,8 @@ func ipvsServiceString(s *ipvs.Service) string {
 	switch s.Protocol {
 	case syscall.IPPROTO_TCP:
 		protocol = "TCP"
+	case syscall.IPPROTO_SCTP:
+		protocol = "SCTP"
 	case syscall.IPPROTO_UDP:
 		protocol = "UDP"
 	default:
@@ -1909,6 +1919,8 @@ func (ln *linuxNetworking) ipvsAddFWMarkService(vip net.IP, protocol, port uint1
 	var protocolStr string
 	if protocol == syscall.IPPROTO_TCP {
 		protocolStr = "tcp"
+	} else if protocol == syscall.IPPROTO_SCTP {
+		protocolStr = "sctp"
 	} else if protocol == syscall.IPPROTO_UDP {
 		protocolStr = "udp"
 	} else {
